@@ -1,0 +1,18 @@
+{
+  "name": "XREAL AURA Explorer",
+  "short_name": "AURA Explorer",
+  "description": "XREAL AURA (Android XR) の光学・6DoF・ハンドトラッキング・空間オーディオ・環境認識を実機で体感するPWA",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "lang": "ja",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
