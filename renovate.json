@@ -3,8 +3,8 @@
   "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
   "timezone": "Asia/Tokyo",
   "schedule": ["before 7am on monday"],
-  "dependencyDashboard": false,
-  "minimumReleaseAge": "3 days",
+  "dependencyDashboard": true,
+  "minimumReleaseAge": "1 day",
   "prConcurrentLimit": 3,
   "packageRules": [
     {
