@@ -14,11 +14,11 @@
     "preview": "vite preview --host"
   },
   "dependencies": {
-    "three": "^0.174.0"
+    "three": "^0.187.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.6.8",
-    "@types/three": "^0.174.0",
+    "@types/three": "^0.187.0",
     "happy-dom": "^21.0.4",
     "typescript": "^5.8.2",
     "vite": "^6.2.0",
