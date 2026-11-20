@@ -147,7 +147,11 @@ function loadCheckedIds(): Set<string> {
     const parsed: unknown = JSON.parse(raw);
     if (!Array.isArray(parsed)) return new Set();
     const validIds = new Set(GUIDE_ITEMS.map((item) => item.id));
-    return new Set(parsed.filter((id): id is string => typeof id === 'string' && validIds.has(id)));
+    return new Set(
+      parsed.filter(
+        (id): id is string => typeof id === 'string' && validIds.has(id),
+      ),
+    );
   } catch {
     return new Set();
   }
@@ -194,13 +198,17 @@ export const guideModule: ExperienceModule = {
     };
 
     const renderDiagnostic = (): string => {
-      const secureText = capabilities.isSecureContext ? 'HTTPS / Localhost OK' : '非セキュア接続（要HTTPS化）';
+      const secureText = capabilities.isSecureContext
+        ? 'HTTPS / Localhost OK'
+        : '非セキュア接続（要HTTPS化）';
       const xrText = capabilities.immersiveArSupported
         ? 'immersive-ar 対応済み'
         : capabilities.webXrAvailable
           ? 'WebXR APIあり（AR非対応/待機）'
           : 'WebXR未検出（3Dプレビュー動作）';
-      const pwaText = capabilities.isStandalonePwa ? 'PWAスタンドアロン起動中' : '通常ブラウザタブ起動中';
+      const pwaText = capabilities.isStandalonePwa
+        ? 'PWAスタンドアロン起動中'
+        : '通常ブラウザタブ起動中';
 
       return `
         <div class="guide-diag" aria-label="現在のブラウザ診断">
@@ -388,7 +396,11 @@ export const guideModule: ExperienceModule = {
 
       if (action === 'filter') {
         const nextFilter = actionEl.dataset.filter as FilterMode | undefined;
-        if (nextFilter === 'all' || nextFilter === 'todo' || nextFilter === 'done') {
+        if (
+          nextFilter === 'all' ||
+          nextFilter === 'todo' ||
+          nextFilter === 'done'
+        ) {
           clearResetArm();
           activeFilter = nextFilter;
           render();

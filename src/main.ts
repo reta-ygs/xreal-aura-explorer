@@ -1,10 +1,10 @@
 import './styles.css';
-import type { CapabilityReport, ExperienceModule, ModuleId } from './types';
-import { opticsModule } from './modules/opticsModule';
-import { spatialHandModule } from './modules/spatialHandModule';
 import { environmentModule } from './modules/environmentModule';
-import { spatialAudioModule } from './modules/spatialAudioModule';
 import { guideModule } from './modules/guideModule';
+import { opticsModule } from './modules/opticsModule';
+import { spatialAudioModule } from './modules/spatialAudioModule';
+import { spatialHandModule } from './modules/spatialHandModule';
+import type { CapabilityReport, ExperienceModule, ModuleId } from './types';
 
 const OLED_MODE_STORAGE_KEY = 'xreal-aura-oled-passthrough-v1';
 
@@ -44,12 +44,14 @@ async function detectCapabilities(): Promise<CapabilityReport> {
   }
 
   const webAudioAvailable =
-    typeof window.AudioContext !== 'undefined' || typeof win.webkitAudioContext !== 'undefined';
+    typeof window.AudioContext !== 'undefined' ||
+    typeof win.webkitAudioContext !== 'undefined';
 
   const deviceMotionAvailable = typeof window.DeviceMotionEvent !== 'undefined';
 
   const isStandalonePwa =
-    Boolean(window.matchMedia?.('(display-mode: standalone)').matches) || Boolean(nav.standalone);
+    Boolean(window.matchMedia?.('(display-mode: standalone)').matches) ||
+    Boolean(nav.standalone);
 
   return {
     isSecureContext,
@@ -87,7 +89,9 @@ function applyOledMode(enabled: boolean): void {
     delete document.documentElement.dataset.oledMode;
   }
 
-  const themeMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+  const themeMeta = document.querySelector<HTMLMetaElement>(
+    'meta[name="theme-color"]',
+  );
   if (themeMeta) {
     themeMeta.content = enabled ? '#000000' : '#05070e';
   }
@@ -106,7 +110,10 @@ function getModuleFromHash(): ModuleId {
 }
 
 function renderCapabilityPills(cap: CapabilityReport): string {
-  const pills: Array<{ label: string; state: 'is-ok' | 'is-warn' | 'is-info' | 'is-off' }> = [
+  const pills: Array<{
+    label: string;
+    state: 'is-ok' | 'is-warn' | 'is-info' | 'is-off';
+  }> = [
     {
       label: cap.isSecureContext ? 'HTTPS / Secure' : '非HTTPS（WebXR不可）',
       state: cap.isSecureContext ? 'is-ok' : 'is-warn',
@@ -117,7 +124,11 @@ function renderCapabilityPills(cap: CapabilityReport): string {
         : cap.webXrAvailable
           ? 'WebXR APIあり（3Dプレビュー）'
           : 'WebXR未対応（3Dプレビュー）',
-      state: cap.immersiveArSupported ? 'is-ok' : cap.webXrAvailable ? 'is-warn' : 'is-off',
+      state: cap.immersiveArSupported
+        ? 'is-ok'
+        : cap.webXrAvailable
+          ? 'is-warn'
+          : 'is-off',
     },
     {
       label: cap.webAudioAvailable ? 'Web Audio OK' : 'Web Audio 非対応',
@@ -198,7 +209,7 @@ async function bootstrap(): Promise<void> {
               <span class="module-card-title">${mod.title}</span>
               <span class="module-card-subtitle">${mod.subtitle}</span>
             </button>
-          `
+          `,
         ).join('')}
       </nav>
 
@@ -214,9 +225,13 @@ async function bootstrap(): Promise<void> {
     </div>
   `;
 
-  const oledToggleBtn = document.getElementById('oled-toggle-btn') as HTMLButtonElement | null;
+  const oledToggleBtn = document.getElementById(
+    'oled-toggle-btn',
+  ) as HTMLButtonElement | null;
   const oledToggleLabel = document.getElementById('oled-toggle-label');
-  const navButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('.module-card'));
+  const navButtons = Array.from(
+    document.querySelectorAll<HTMLButtonElement>('.module-card'),
+  );
   const moduleIntroEl = document.getElementById('module-intro');
   const moduleStageEl = document.getElementById('module-stage');
 

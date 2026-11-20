@@ -1,5 +1,9 @@
 import * as THREE from 'three';
-import type { CapabilityReport, ExperienceModule, XrSceneContext } from '../types';
+import type {
+  CapabilityReport,
+  ExperienceModule,
+  XrSceneContext,
+} from '../types';
 import { mountXrViewport } from '../xr/xrEngine';
 
 const HAND_JOINTS: readonly XRHandJoint[] = [
@@ -69,9 +73,15 @@ interface PointerRayState {
 
 function disposeObjectTree(root: THREE.Object3D): void {
   root.traverse((obj) => {
-    if (obj instanceof THREE.Mesh || obj instanceof THREE.Line || obj instanceof THREE.LineSegments) {
+    if (
+      obj instanceof THREE.Mesh ||
+      obj instanceof THREE.Line ||
+      obj instanceof THREE.LineSegments
+    ) {
       obj.geometry.dispose();
-      const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
+      const materials = Array.isArray(obj.material)
+        ? obj.material
+        : [obj.material];
       for (const mat of materials) {
         if (mat && 'map' in mat && mat.map instanceof THREE.Texture) {
           mat.map.dispose();
@@ -140,7 +150,11 @@ function createInfoPanelTexture(
 
   ctx2d.fillStyle = '#94a3b8';
   ctx2d.font = '16px system-ui, -apple-system, sans-serif';
-  ctx2d.fillText('回り込んで6DoF固定を確認 / つまんでオブジェクトを移動', 32, 276);
+  ctx2d.fillText(
+    '回り込んで6DoF固定を確認 / つまんでオブジェクトを移動',
+    32,
+    276,
+  );
 }
 
 export const spatialHandModule: ExperienceModule = {
@@ -226,8 +240,13 @@ export const spatialHandModule: ExperienceModule = {
       }
     };
 
-    const setObjectHighlighted = (obj: GrabbableObject, grabbed: boolean): void => {
-      obj.accentMaterial.emissiveIntensity = grabbed ? 1.5 : obj.baseEmissiveIntensity;
+    const setObjectHighlighted = (
+      obj: GrabbableObject,
+      grabbed: boolean,
+    ): void => {
+      obj.accentMaterial.emissiveIntensity = grabbed
+        ? 1.5
+        : obj.baseEmissiveIntensity;
       obj.group.scale.setScalar(grabbed ? 1.1 : 1.0);
     };
 
@@ -247,10 +266,16 @@ export const spatialHandModule: ExperienceModule = {
       pedestalGroup.add(screenMesh);
 
       // Sleek floating frame border
-      const frameEdges = new THREE.EdgesGeometry(new THREE.BoxGeometry(0.7, 0.35, 0.015));
+      const frameEdges = new THREE.EdgesGeometry(
+        new THREE.BoxGeometry(0.7, 0.35, 0.015),
+      );
       const frameLines = new THREE.LineSegments(
         frameEdges,
-        new THREE.LineBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.7 }),
+        new THREE.LineBasicMaterial({
+          color: 0x38bdf8,
+          transparent: true,
+          opacity: 0.7,
+        }),
       );
       frameLines.position.copy(screenMesh.position);
       pedestalGroup.add(frameLines);
@@ -302,12 +327,19 @@ export const spatialHandModule: ExperienceModule = {
           transparent: true,
           opacity: 0.88,
         });
-        const core = new THREE.Mesh(new THREE.OctahedronGeometry(0.1, 0), coreMat);
+        const core = new THREE.Mesh(
+          new THREE.OctahedronGeometry(0.1, 0),
+          coreMat,
+        );
         group.add(core);
 
         const wire = new THREE.LineSegments(
           new THREE.EdgesGeometry(new THREE.OctahedronGeometry(0.125, 0)),
-          new THREE.LineBasicMaterial({ color: 0x7dd3fc, transparent: true, opacity: 0.65 }),
+          new THREE.LineBasicMaterial({
+            color: 0x7dd3fc,
+            transparent: true,
+            opacity: 0.65,
+          }),
         );
         group.add(wire);
 
@@ -339,7 +371,10 @@ export const spatialHandModule: ExperienceModule = {
           roughness: 0.2,
           metalness: 0.75,
         });
-        const outerRing = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.014, 16, 40), ringMat);
+        const outerRing = new THREE.Mesh(
+          new THREE.TorusGeometry(0.1, 0.014, 16, 40),
+          ringMat,
+        );
         group.add(outerRing);
 
         const innerRing = new THREE.Mesh(
@@ -402,12 +437,19 @@ export const spatialHandModule: ExperienceModule = {
           transparent: true,
           opacity: 0.85,
         });
-        const cube = new THREE.Mesh(new THREE.BoxGeometry(0.145, 0.145, 0.145), cubeMat);
+        const cube = new THREE.Mesh(
+          new THREE.BoxGeometry(0.145, 0.145, 0.145),
+          cubeMat,
+        );
         group.add(cube);
 
         const frame = new THREE.LineSegments(
           new THREE.EdgesGeometry(new THREE.BoxGeometry(0.165, 0.165, 0.165)),
-          new THREE.LineBasicMaterial({ color: 0x6ee7b7, transparent: true, opacity: 0.8 }),
+          new THREE.LineBasicMaterial({
+            color: 0x6ee7b7,
+            transparent: true,
+            opacity: 0.8,
+          }),
         );
         group.add(frame);
 
@@ -437,7 +479,8 @@ export const spatialHandModule: ExperienceModule = {
       const joints = new Map<XRHandJoint, THREE.Mesh>();
 
       for (const jointName of HAND_JOINTS) {
-        const isPinchTip = jointName === 'index-finger-tip' || jointName === 'thumb-tip';
+        const isPinchTip =
+          jointName === 'index-finger-tip' || jointName === 'thumb-tip';
         const mesh = new THREE.Mesh(
           isPinchTip ? tipSphereGeo : jointSphereGeo,
           isPinchTip ? pinchTipMat : regularJointMat,
@@ -519,7 +562,9 @@ export const spatialHandModule: ExperienceModule = {
       }
       previewGrabbed = null;
       updateStateChip('オブジェクト位置をリセットしました');
-      sceneCtx?.setStatus('オブジェクトを初期の6DoFアンカー位置にリセットしました');
+      sceneCtx?.setStatus(
+        'オブジェクトを初期の6DoFアンカー位置にリセットしました',
+      );
     };
 
     // WebXR Compute Puck / select fallback handlers
@@ -568,7 +613,9 @@ export const spatialHandModule: ExperienceModule = {
           hitObj.grabbedBy = `pointer:${source.handedness}`;
           setObjectHighlighted(hitObj, true);
           updateStateChip(`ポインター把持中: ${hitObj.label}`);
-          sceneCtx.setStatus(`Compute Puck / ポインターで「${hitObj.label}」を移動中`);
+          sceneCtx.setStatus(
+            `Compute Puck / ポインターで「${hitObj.label}」を移動中`,
+          );
         }
       }
     };
@@ -637,7 +684,10 @@ export const spatialHandModule: ExperienceModule = {
       setObjectHighlighted(target, true);
 
       sceneCtx.camera.getWorldDirection(tmpCamDir);
-      dragPlane.setFromNormalAndCoplanarPoint(tmpCamDir.negate(), target.group.position);
+      dragPlane.setFromNormalAndCoplanarPoint(
+        tmpCamDir.negate(),
+        target.group.position,
+      );
       if (raycaster.ray.intersectPlane(dragPlane, dragIntersection)) {
         dragOffset.copy(target.group.position).sub(dragIntersection);
       } else {
@@ -645,7 +695,9 @@ export const spatialHandModule: ExperienceModule = {
       }
 
       updateStateChip(`ドラッグ移動中: ${target.label}`);
-      sceneCtx.setStatus(`「${target.label}」をドラッグ移動中（離すと空間固定）`);
+      sceneCtx.setStatus(
+        `「${target.label}」をドラッグ移動中（離すと空間固定）`,
+      );
     };
 
     const onPreviewPointerMove = (event: PointerEvent): void => {
@@ -686,7 +738,9 @@ export const spatialHandModule: ExperienceModule = {
       previewGrabbed = null;
       previewPointerId = null;
       updateStateChip('待機中（空間に固定しました）');
-      sceneCtx?.setStatus(`「${released.label}」を新しい空間位置に固定しました`);
+      sceneCtx?.setStatus(
+        `「${released.label}」を新しい空間位置に固定しました`,
+      );
     };
 
     const unmount = mountXrViewport(
@@ -759,7 +813,10 @@ export const spatialHandModule: ExperienceModule = {
           }
 
           // Bind preview pointer listeners
-          ctx.renderer.domElement.addEventListener('pointerdown', onPreviewPointerDown);
+          ctx.renderer.domElement.addEventListener(
+            'pointerdown',
+            onPreviewPointerDown,
+          );
           window.addEventListener('pointermove', onPreviewPointerMove);
           window.addEventListener('pointerup', onPreviewPointerUp);
           window.addEventListener('pointercancel', onPreviewPointerUp);
@@ -836,7 +893,8 @@ export const spatialHandModule: ExperienceModule = {
               obj.group.position.x = obj.anchorPosition.x;
               obj.group.position.z = obj.anchorPosition.z;
               obj.group.position.y =
-                obj.anchorPosition.y + Math.sin(elapsed * 1.6 + obj.idlePhase) * 0.014;
+                obj.anchorPosition.y +
+                Math.sin(elapsed * 1.6 + obj.idlePhase) * 0.014;
               obj.group.rotation.y += delta * 0.35;
             }
           }
@@ -906,9 +964,15 @@ export const spatialHandModule: ExperienceModule = {
                       hv.pinchOrb.visible = true;
                       hv.pinchOrb.position.copy(tmpMid);
                       const proximity = Math.max(0, 1 - pinchDist / 0.08);
-                      hv.pinchOrbMat.opacity = hv.isPinching ? 0.92 : proximity * 0.55;
-                      hv.pinchOrbMat.color.setHex(hv.isPinching ? 0x10b981 : 0xfde047);
-                      hv.pinchOrb.scale.setScalar(hv.isPinching ? 1.25 : 0.7 + proximity * 0.4);
+                      hv.pinchOrbMat.opacity = hv.isPinching
+                        ? 0.92
+                        : proximity * 0.55;
+                      hv.pinchOrbMat.color.setHex(
+                        hv.isPinching ? 0x10b981 : 0xfde047,
+                      );
+                      hv.pinchOrb.scale.setScalar(
+                        hv.isPinching ? 1.25 : 0.7 + proximity * 0.4,
+                      );
                     } else {
                       hv.pinchOrb.visible = false;
                     }
@@ -937,14 +1001,20 @@ export const spatialHandModule: ExperienceModule = {
                           hv.hasLastQuat = true;
                         }
                         updateStateChip(`ピンチ把持中: ${nearest.label}`);
-                        sceneCtx.setStatus(`ピンチで「${nearest.label}」を移動・回転中`);
+                        sceneCtx.setStatus(
+                          `ピンチで「${nearest.label}」を移動・回転中`,
+                        );
                       }
                     }
 
                     // Pinch held -> move & rotate grabbed object
                     if (hv.isPinching && hv.grabbedObj) {
-                      hv.grabbedObj.group.position.copy(tmpMid).add(hv.grabOffset);
-                      hv.grabbedObj.anchorPosition.copy(hv.grabbedObj.group.position);
+                      hv.grabbedObj.group.position
+                        .copy(tmpMid)
+                        .add(hv.grabOffset);
+                      hv.grabbedObj.anchorPosition.copy(
+                        hv.grabbedObj.group.position,
+                      );
 
                       if (hasWristQuat) {
                         if (hv.hasLastQuat) {
@@ -952,7 +1022,9 @@ export const spatialHandModule: ExperienceModule = {
                             .copy(hv.lastHandQuat)
                             .invert()
                             .premultiply(tmpQuat);
-                          hv.grabbedObj.group.quaternion.premultiply(tmpDeltaQuat);
+                          hv.grabbedObj.group.quaternion.premultiply(
+                            tmpDeltaQuat,
+                          );
                         }
                         hv.lastHandQuat.copy(tmpQuat);
                         hv.hasLastQuat = true;
@@ -968,14 +1040,19 @@ export const spatialHandModule: ExperienceModule = {
                       hv.grabbedObj = null;
                       hv.hasLastQuat = false;
                       updateStateChip('空間に固定しました（ピンチ待機中）');
-                      sceneCtx.setStatus(`「${released.label}」を新しい6DoF座標に固定しました`);
+                      sceneCtx.setStatus(
+                        `「${released.label}」を新しい6DoF座標に固定しました`,
+                      );
                     }
                   }
                 } else {
                   // 2) Compute Puck / Controller Pointer Fallback
                   seenPointers.add(source);
                   const rayState = getOrCreatePointerRay(source);
-                  const rayPose = frame.getPose(source.targetRaySpace, refSpace);
+                  const rayPose = frame.getPose(
+                    source.targetRaySpace,
+                    refSpace,
+                  );
                   if (rayPose) {
                     const p = rayPose.transform.position;
                     const o = rayPose.transform.orientation;
@@ -986,18 +1063,25 @@ export const spatialHandModule: ExperienceModule = {
                     if (rayState.grabbedObj) {
                       tmpRayOrigin.set(p.x, p.y, p.z);
                       tmpQuat.set(o.x, o.y, o.z, o.w);
-                      tmpRayDir.set(0, 0, -1).applyQuaternion(tmpQuat).normalize();
+                      tmpRayDir
+                        .set(0, 0, -1)
+                        .applyQuaternion(tmpQuat)
+                        .normalize();
                       rayState.grabbedObj.group.position
                         .copy(tmpRayOrigin)
                         .addScaledVector(tmpRayDir, rayState.grabDistance);
-                      rayState.grabbedObj.anchorPosition.copy(rayState.grabbedObj.group.position);
+                      rayState.grabbedObj.anchorPosition.copy(
+                        rayState.grabbedObj.group.position,
+                      );
 
                       if (rayState.hasLastQuat) {
                         tmpDeltaQuat
                           .copy(rayState.lastRayQuat)
                           .invert()
                           .premultiply(tmpQuat);
-                        rayState.grabbedObj.group.quaternion.premultiply(tmpDeltaQuat);
+                        rayState.grabbedObj.group.quaternion.premultiply(
+                          tmpDeltaQuat,
+                        );
                       }
                       rayState.lastRayQuat.copy(tmpQuat);
                       rayState.hasLastQuat = true;
@@ -1042,7 +1126,10 @@ export const spatialHandModule: ExperienceModule = {
 
         dispose(): void {
           if (sceneCtx) {
-            sceneCtx.renderer.domElement.removeEventListener('pointerdown', onPreviewPointerDown);
+            sceneCtx.renderer.domElement.removeEventListener(
+              'pointerdown',
+              onPreviewPointerDown,
+            );
             sceneCtx.scene.remove(moduleRoot);
           }
           window.removeEventListener('pointermove', onPreviewPointerMove);

@@ -14,6 +14,7 @@ WebXR 非対応ブラウザ（PC・スマートフォン）でも 3D プレビ�
 5. **オーナーズガイド（Guide）** — XREAL AURA の必須8機能（5段階電子調光 / Gemini AI / Compute Puck / Home Space / 指紋認証 / DP-in / Bluetooth / WebXR起動Tips）を「試した！」チェックリスト＆進捗バーで管理（`localStorage` 自動保存）
 
 ### OLED 透過モード（シースルー透過モード）
+
 ヘッダー右上の **「OLED透過モード」** を ON にすると、画面背景やカード背景が純黒（`#000000`）になります。  
 XREAL AURA の Micro-OLED では黒ピクセルが発光しないため、背景が光学的に透過し、UI や 3D オブジェクトだけが現実空間に浮かぶように表示されます。
 
@@ -67,10 +68,12 @@ tailscale serve https / http://127.0.0.1:5173
 ### 方法 3：Cloudflare Tunnel / ngrok（一時的な公開 HTTPS URL）
 
 - **Cloudflare Tunnel（アカウント不要）**
+
   ```bash
   cloudflared tunnel --url http://localhost:5173
   ```
 - **ngrok**
+
   ```bash
   ngrok http 5173
   ```

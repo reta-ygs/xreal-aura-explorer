@@ -131,13 +131,17 @@ export function mountXrViewport(
   arButton.style.fontSize = '13px';
   arButton.style.fontWeight = '600';
   arButton.style.border = '1px solid rgba(56, 189, 248, 0.45)';
-  arButton.style.cursor = capabilities.immersiveArSupported ? 'pointer' : 'not-allowed';
+  arButton.style.cursor = capabilities.immersiveArSupported
+    ? 'pointer'
+    : 'not-allowed';
   arButton.style.transition = 'all 160ms ease';
   arButton.style.whiteSpace = 'nowrap';
   arButton.style.background = capabilities.immersiveArSupported
     ? 'linear-gradient(135deg, #0ea5e9 0%, #2563eb 100%)'
     : 'rgba(51, 65, 85, 0.55)';
-  arButton.style.color = capabilities.immersiveArSupported ? '#ffffff' : '#94a3b8';
+  arButton.style.color = capabilities.immersiveArSupported
+    ? '#ffffff'
+    : '#94a3b8';
   topBar.appendChild(arButton);
 
   // Bottom HUD bar
@@ -174,7 +178,8 @@ export function mountXrViewport(
 
   const orbitHint = document.createElement('div');
   orbitHint.className = 'xr-orbit-hint';
-  orbitHint.textContent = 'ドラッグで視点回転 / ホイールでズーム / ダブルクリックで視点リセット';
+  orbitHint.textContent =
+    'ドラッグで視点回転 / ホイールでズーム / ダブルクリックで視点リセット';
   orbitHint.style.fontSize = '11px';
   orbitHint.style.color = '#94a3b8';
   statusRow.appendChild(orbitHint);
@@ -193,7 +198,12 @@ export function mountXrViewport(
   const initialWidth = Math.max(canvasHost.clientWidth, 320);
   const initialHeight = Math.max(canvasHost.clientHeight, 320);
 
-  const camera = new THREE.PerspectiveCamera(58, initialWidth / initialHeight, 0.01, 60);
+  const camera = new THREE.PerspectiveCamera(
+    58,
+    initialWidth / initialHeight,
+    0.01,
+    60,
+  );
 
   const renderer = new THREE.WebGLRenderer({
     alpha: true,
@@ -245,7 +255,8 @@ export function mountXrViewport(
   let isRequestingSession = false;
   let disposed = false;
 
-  const isXrActive = (): boolean => activeSession !== null || renderer.xr.isPresenting;
+  const isXrActive = (): boolean =>
+    activeSession !== null || renderer.xr.isPresenting;
 
   const setStatus = (text: string): void => {
     if (!disposed) {
@@ -273,7 +284,11 @@ export function mountXrViewport(
   };
 
   const onPointerMove = (event: PointerEvent): void => {
-    if (!isOrbitDragging || activePointerId !== event.pointerId || isXrActive()) {
+    if (
+      !isOrbitDragging ||
+      activePointerId !== event.pointerId ||
+      isXrActive()
+    ) {
       return;
     }
     const dx = event.clientX - lastPointerX;
@@ -298,7 +313,10 @@ export function mountXrViewport(
       return;
     }
     event.preventDefault();
-    orbit.radius = Math.max(0.7, Math.min(5.5, orbit.radius + event.deltaY * 0.0018));
+    orbit.radius = Math.max(
+      0.7,
+      Math.min(5.5, orbit.radius + event.deltaY * 0.0018),
+    );
     applyOrbitCamera();
   };
 
@@ -346,7 +364,8 @@ export function mountXrViewport(
       modeBadge.style.color = '#6ee7b7';
       modeBadge.style.border = '1px solid rgba(16, 185, 129, 0.45)';
       arButton.textContent = 'ARセッション終了';
-      arButton.style.background = 'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)';
+      arButton.style.background =
+        'linear-gradient(135deg, #ef4444 0%, #b91c1c 100%)';
       arButton.style.border = '1px solid rgba(248, 113, 113, 0.55)';
       orbitHint.style.display = 'none';
     } else {
@@ -391,7 +410,9 @@ export function mountXrViewport(
     }
 
     if (!navigator.xr || !capabilities.immersiveArSupported) {
-      setStatus('この端末またはブラウザは WebXR immersive-ar に対応していません');
+      setStatus(
+        'この端末またはブラウザは WebXR immersive-ar に対応していません',
+      );
       return;
     }
 
@@ -401,7 +422,11 @@ export function mountXrViewport(
 
     try {
       const optionalFeatures = Array.from(
-        new Set(['local-floor', 'dom-overlay', ...(options.optionalFeatures ?? [])]),
+        new Set([
+          'local-floor',
+          'dom-overlay',
+          ...(options.optionalFeatures ?? []),
+        ]),
       );
 
       const sessionInit: XRSessionInit = {
@@ -409,7 +434,10 @@ export function mountXrViewport(
         domOverlay: { root: overlayRoot },
       };
 
-      const session = await navigator.xr.requestSession('immersive-ar', sessionInit);
+      const session = await navigator.xr.requestSession(
+        'immersive-ar',
+        sessionInit,
+      );
       if (disposed) {
         await session.end();
         return;
@@ -469,7 +497,9 @@ export function mountXrViewport(
       return;
     }
     const delta =
-      lastTimeMs === null ? 0.016 : Math.min(Math.max((timeMs - lastTimeMs) / 1000, 0), 0.1);
+      lastTimeMs === null
+        ? 0.016
+        : Math.min(Math.max((timeMs - lastTimeMs) / 1000, 0), 0.1);
     lastTimeMs = timeMs;
     elapsedSec += delta;
 

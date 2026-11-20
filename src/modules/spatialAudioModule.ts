@@ -1,5 +1,9 @@
 import * as THREE from 'three';
-import type { CapabilityReport, ExperienceModule, XrSceneContext } from '../types.ts';
+import type {
+  CapabilityReport,
+  ExperienceModule,
+  XrSceneContext,
+} from '../types.ts';
 import { mountXrViewport } from '../xr/xrEngine.ts';
 
 type OrbId = 'chime' | 'pulse' | 'drone';
@@ -129,7 +133,11 @@ function ensureStyles(): void {
   document.head.appendChild(style);
 }
 
-function setAudioParamSafe(param: AudioParam | undefined, value: number, time: number): void {
+function setAudioParamSafe(
+  param: AudioParam | undefined,
+  value: number,
+  time: number,
+): void {
   if (!param) return;
   if (typeof param.setValueAtTime === 'function') {
     param.setValueAtTime(value, time);
@@ -138,7 +146,11 @@ function setAudioParamSafe(param: AudioParam | undefined, value: number, time: n
   }
 }
 
-function updatePannerPosition(panner: PannerNode, pos: THREE.Vector3, time: number): void {
+function updatePannerPosition(
+  panner: PannerNode,
+  pos: THREE.Vector3,
+  time: number,
+): void {
   if ('positionX' in panner && panner.positionX) {
     setAudioParamSafe(panner.positionX, pos.x, time);
     setAudioParamSafe(panner.positionY, pos.y, time);
@@ -153,7 +165,7 @@ function updateListenerPose(
   pos: THREE.Vector3,
   forward: THREE.Vector3,
   up: THREE.Vector3,
-  time: number
+  time: number,
 ): void {
   if ('positionX' in listener && listener.positionX) {
     setAudioParamSafe(listener.positionX, pos.x, time);
@@ -170,16 +182,28 @@ function updateListenerPose(
       listener.setPosition(pos.x, pos.y, pos.z);
     }
     if (typeof listener.setOrientation === 'function') {
-      listener.setOrientation(forward.x, forward.y, forward.z, up.x, up.y, up.z);
+      listener.setOrientation(
+        forward.x,
+        forward.y,
+        forward.z,
+        up.x,
+        up.y,
+        up.z,
+      );
     }
   }
 }
 
-function createOrbitRingGeometry(radius: number, segments = 64): THREE.BufferGeometry {
+function createOrbitRingGeometry(
+  radius: number,
+  segments = 64,
+): THREE.BufferGeometry {
   const pts: THREE.Vector3[] = [];
   for (let i = 0; i < segments; i++) {
     const theta = (i / segments) * Math.PI * 2;
-    pts.push(new THREE.Vector3(Math.cos(theta) * radius, 0, Math.sin(theta) * radius));
+    pts.push(
+      new THREE.Vector3(Math.cos(theta) * radius, 0, Math.sin(theta) * radius),
+    );
   }
   return new THREE.BufferGeometry().setFromPoints(pts);
 }
@@ -226,7 +250,9 @@ const ORB_CONFIGS: OrbConfig[] = [
 // Pentatonic frequencies (C5, D5, E5, G5, A5, C6)
 const CHIME_SCALE = [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5];
 // Rhythmic marimba-like pitches
-const PULSE_SCALE = [261.63, 329.63, 392.0, 329.63, 440.0, 392.0, 329.63, 293.66];
+const PULSE_SCALE = [
+  261.63, 329.63, 392.0, 329.63, 440.0, 392.0, 329.63, 293.66,
+];
 
 export const spatialAudioModule: ExperienceModule = {
   id: 'spatial-audio',
@@ -470,16 +496,22 @@ export const spatialAudioModule: ExperienceModule = {
         }
         audioRunning = audioCtx.state === 'running';
         if (masterGain && audioRunning) {
-          masterGain.gain.setTargetAtTime(masterVolume, audioCtx.currentTime, 0.04);
+          masterGain.gain.setTargetAtTime(
+            masterVolume,
+            audioCtx.currentTime,
+            0.04,
+          );
         }
         updateHudState();
         ctxRef?.setStatus(
           audioRunning
             ? 'HRTF 空間オーディオ再生中 — 頭を左右に振るか歩いて音像定位を体感してください'
-            : '音声エンジンが一時停止中です。再生ボタンを押してください。'
+            : '音声エンジンが一時停止中です。再生ボタンを押してください。',
         );
       } catch {
-        ctxRef?.setStatus('音声の開始がブロックされました。もう一度「空間音声を開始」をタップしてください。');
+        ctxRef?.setStatus(
+          '音声の開始がブロックされました。もう一度「空間音声を開始」をタップしてください。',
+        );
       }
     }
 
@@ -500,7 +532,9 @@ export const spatialAudioModule: ExperienceModule = {
 
     function updateHudState(): void {
       if (playBtn) {
-        playBtn.textContent = audioRunning ? '⏸ 空間音声を一時停止' : '▶ 空間音声を開始 (HRTF)';
+        playBtn.textContent = audioRunning
+          ? '⏸ 空間音声を一時停止'
+          : '▶ 空間音声を開始 (HRTF)';
         playBtn.classList.toggle('is-primary', !audioRunning);
         playBtn.classList.toggle('is-active', audioRunning);
       }
@@ -523,7 +557,9 @@ export const spatialAudioModule: ExperienceModule = {
         const activeCam = ctxRef.renderer.xr.getCamera();
         activeCam.getWorldPosition(tmpCamPos);
         anchorCenter.copy(tmpCamPos);
-        ctxRef.setStatus('現在の頭の位置を中心に3つの音源オーブを再配置しました。');
+        ctxRef.setStatus(
+          '現在の頭の位置を中心に3つの音源オーブを再配置しました。',
+        );
       } else {
         anchorCenter.set(0, 1.2, -0.9);
         ctxRef.setStatus('3Dプレビュー中央に3つの音源オーブを再配置しました。');
@@ -553,7 +589,9 @@ export const spatialAudioModule: ExperienceModule = {
       modeOrbitBtn.addEventListener('click', () => {
         motionMode = 'orbit';
         updateHudState();
-        ctxRef?.setStatus('自動周回モード: 座ったままでも360°の立体音響を体感できます。');
+        ctxRef?.setStatus(
+          '自動周回モード: 座ったままでも360°の立体音響を体感できます。',
+        );
       });
 
       modeFixedBtn = document.createElement('button');
@@ -563,7 +601,9 @@ export const spatialAudioModule: ExperienceModule = {
       modeFixedBtn.addEventListener('click', () => {
         motionMode = 'fixed';
         updateHudState();
-        ctxRef?.setStatus('空間固定モード: 首を振ったりオーブの周りを歩いてBose音響の定位を確認できます。');
+        ctxRef?.setStatus(
+          '空間固定モード: 首を振ったりオーブの周りを歩いてBose音響の定位を確認できます。',
+        );
       });
 
       const recenterBtn = document.createElement('button');
@@ -587,7 +627,11 @@ export const spatialAudioModule: ExperienceModule = {
           if (!target) return;
           target.enabled = !target.enabled;
           if (target.gain && audioCtx) {
-            target.gain.gain.setTargetAtTime(target.enabled ? 1.0 : 0.0, audioCtx.currentTime, 0.05);
+            target.gain.gain.setTargetAtTime(
+              target.enabled ? 1.0 : 0.0,
+              audioCtx.currentTime,
+              0.05,
+            );
           }
           if (target.enabled && !audioRunning) {
             void ensureAudioStarted();
@@ -605,7 +649,11 @@ export const spatialAudioModule: ExperienceModule = {
       volInput.addEventListener('input', () => {
         masterVolume = Number(volInput.value);
         if (masterGain && audioCtx) {
-          masterGain.gain.setTargetAtTime(masterVolume, audioCtx.currentTime, 0.03);
+          masterGain.gain.setTargetAtTime(
+            masterVolume,
+            audioCtx.currentTime,
+            0.03,
+          );
         }
       });
       row2.appendChild(volWrap);
@@ -727,14 +775,18 @@ export const spatialAudioModule: ExperienceModule = {
           }
 
           mountHud(ctx.overlayRoot);
-          ctx.setStatus('「空間音声を開始 (HRTF)」をタップして立体音響を起動してください。');
+          ctx.setStatus(
+            '「空間音声を開始 (HRTF)」をタップして立体音響を起動してください。',
+          );
         },
 
         onFrame(delta: number, elapsed: number, _frame?: XRFrame): void {
           if (!ctxRef || disposed) return;
           const dt = Math.min(delta, 0.1);
 
-          const activeCam = ctxRef.isXrActive() ? ctxRef.renderer.xr.getCamera() : ctxRef.camera;
+          const activeCam = ctxRef.isXrActive()
+            ? ctxRef.renderer.xr.getCamera()
+            : ctxRef.camera;
           activeCam.getWorldPosition(tmpCamPos);
           activeCam.getWorldQuaternion(tmpCamQuat);
 
@@ -754,7 +806,13 @@ export const spatialAudioModule: ExperienceModule = {
 
           const nowAudio = audioCtx ? audioCtx.currentTime : 0;
           if (audioCtx && audioRunning) {
-            updateListenerPose(audioCtx.listener, tmpCamPos, tmpForward, tmpUp, nowAudio);
+            updateListenerPose(
+              audioCtx.listener,
+              tmpCamPos,
+              tmpForward,
+              tmpUp,
+              nowAudio,
+            );
           }
 
           let activeCount = 0;
@@ -771,16 +829,20 @@ export const spatialAudioModule: ExperienceModule = {
               orb.worldPos.set(
                 anchorCenter.x + Math.cos(angle) * cfg.orbitRadius,
                 anchorCenter.y + cfg.heightOffset + bob,
-                anchorCenter.z + Math.sin(angle) * cfg.orbitRadius
+                anchorCenter.z + Math.sin(angle) * cfg.orbitRadius,
               );
               orb.orbitRing.visible = orb.enabled;
-              orb.orbitRing.position.set(anchorCenter.x, anchorCenter.y + cfg.heightOffset, anchorCenter.z);
+              orb.orbitRing.position.set(
+                anchorCenter.x,
+                anchorCenter.y + cfg.heightOffset,
+                anchorCenter.z,
+              );
             } else {
               const bob = Math.sin(elapsed * 1.6 + cfg.orbitPhase) * 0.06;
               orb.worldPos.set(
                 anchorCenter.x + cfg.fixedOffset.x,
                 anchorCenter.y + cfg.fixedOffset.y + bob,
-                anchorCenter.z + cfg.fixedOffset.z
+                anchorCenter.z + cfg.fixedOffset.z,
               );
               orb.orbitRing.visible = false;
             }
@@ -809,16 +871,19 @@ export const spatialAudioModule: ExperienceModule = {
                   orb.triggerTimer = 0.545;
                 }
               } else if (cfg.id === 'drone') {
-                orb.pulseEnergy = 0.35 + 0.25 * (0.5 + 0.5 * Math.sin(elapsed * 1.38));
+                orb.pulseEnergy =
+                  0.35 + 0.25 * (0.5 + 0.5 * Math.sin(elapsed * 1.38));
               }
             }
 
             // Animate glowing orb & ripple ring
             orb.pulseEnergy = Math.max(0, orb.pulseEnergy - dt * 2.2);
             const activeMult = orb.enabled ? 1.0 : 0.25;
-            const scale = (1.0 + orb.pulseEnergy * 0.32) * (orb.enabled ? 1.0 : 0.72);
+            const scale =
+              (1.0 + orb.pulseEnergy * 0.32) * (orb.enabled ? 1.0 : 0.72);
             orb.coreMesh.scale.setScalar(scale);
-            orb.coreMat.emissiveIntensity = (0.55 + orb.pulseEnergy * 1.6) * activeMult;
+            orb.coreMat.emissiveIntensity =
+              (0.55 + orb.pulseEnergy * 1.6) * activeMult;
             orb.coreMat.opacity = orb.enabled ? 1.0 : 0.35;
             orb.coreMat.transparent = !orb.enabled;
 
@@ -827,7 +892,8 @@ export const spatialAudioModule: ExperienceModule = {
             orb.haloMat.opacity = (0.14 + orb.pulseEnergy * 0.34) * activeMult;
 
             if (orb.enabled && audioRunning) {
-              orb.wavePhase = (orb.wavePhase + dt * (cfg.id === 'pulse' ? 1.8 : 0.9)) % 1;
+              orb.wavePhase =
+                (orb.wavePhase + dt * (cfg.id === 'pulse' ? 1.8 : 0.9)) % 1;
               const ringScale = 1.0 + orb.wavePhase * 2.4;
               orb.waveMesh.visible = true;
               orb.waveMesh.scale.setScalar(ringScale);
@@ -859,7 +925,9 @@ export const spatialAudioModule: ExperienceModule = {
           telemetryAccum += dt;
           if (telemetryAccum >= 0.2 && telemetryEl) {
             telemetryAccum = 0;
-            const yawDeg = Math.round((Math.atan2(-tmpForward.x, -tmpForward.z) * 180) / Math.PI);
+            const yawDeg = Math.round(
+              (Math.atan2(-tmpForward.x, -tmpForward.z) * 180) / Math.PI,
+            );
             telemetryEl.innerHTML = `
               <span>状態: ${audioRunning ? `HRTF再生中 (${activeCount}音源)` : '停止中'} / 向き: ${yawDeg}°</span>
               <span>最近接オーブ: ${nearestLabel}</span>
@@ -927,7 +995,7 @@ export const spatialAudioModule: ExperienceModule = {
           orbButtons.clear();
           ctxRef = null;
         },
-      }
+      },
     );
   },
 };

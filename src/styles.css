@@ -7,8 +7,13 @@
 
   /* Base palette (Standard Dark Mode) */
   --bg-page: #05070e;
-  --bg-page-glow: radial-gradient(circle at 12% 0%, rgba(34, 211, 238, 0.14), transparent 42%),
-    radial-gradient(circle at 88% 8%, rgba(167, 139, 250, 0.14), transparent 44%);
+  --bg-page-glow:
+    radial-gradient(circle at 12% 0%, rgba(34, 211, 238, 0.14), transparent 42%),
+    radial-gradient(
+      circle at 88% 8%,
+      rgba(167, 139, 250, 0.14),
+      transparent 44%
+    );
   --bg-surface: rgba(12, 17, 30, 0.88);
   --bg-surface-elevated: rgba(18, 26, 44, 0.94);
   --bg-surface-soft: rgba(255, 255, 255, 0.04);
@@ -56,15 +61,18 @@
   --shadow-glow-cyan: 0 0 20px rgba(34, 211, 238, 0.28);
   --shadow-glow-violet: 0 0 20px rgba(167, 139, 250, 0.25);
 
-  --font-sans: 'Inter', 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Yu Gothic', system-ui,
-    -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-sans:
+    "Inter", "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic",
+    system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono:
+    "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    monospace;
 }
 
 /* --------------------------------------------------------------------------
    OLED Optical See-Through Mode (#000000 pure black = transparent on AURA)
    -------------------------------------------------------------------------- */
-[data-oled-mode='passthrough'],
+[data-oled-mode="passthrough"],
 body.oled-passthrough {
   --bg-page: #000000;
   --bg-page-glow: none;
@@ -85,8 +93,10 @@ body.oled-passthrough {
   --accent-violet-bg: rgba(167, 139, 250, 0.18);
 
   --shadow-panel: none;
-  --shadow-glow-cyan: 0 0 0 1px rgba(34, 211, 238, 0.65), 0 0 16px rgba(34, 211, 238, 0.28);
-  --shadow-glow-violet: 0 0 0 1px rgba(167, 139, 250, 0.65), 0 0 16px rgba(167, 139, 250, 0.25);
+  --shadow-glow-cyan:
+    0 0 0 1px rgba(34, 211, 238, 0.65), 0 0 16px rgba(34, 211, 238, 0.28);
+  --shadow-glow-violet:
+    0 0 0 1px rgba(167, 139, 250, 0.65), 0 0 16px rgba(167, 139, 250, 0.25);
 }
 
 /* --------------------------------------------------------------------------
@@ -115,7 +125,7 @@ body {
 }
 
 body.oled-passthrough,
-[data-oled-mode='passthrough'] body {
+[data-oled-mode="passthrough"] body {
   background-color: #000000 !important;
   background-image: none !important;
 }
@@ -169,8 +179,8 @@ kbd {
 
 /* Base Interactive Elements (large hit targets for touch / pointer / pinch) */
 button,
-input[type='button'],
-input[type='submit'],
+input[type="button"],
+input[type="submit"],
 select {
   font-family: inherit;
   font-size: 0.95rem;
@@ -213,7 +223,7 @@ button:disabled {
   cursor: not-allowed;
 }
 
-input[type='range'] {
+input[type="range"] {
   width: 100%;
   min-height: 36px;
   accent-color: var(--accent-cyan);
@@ -243,8 +253,9 @@ canvas {
 .app-shell {
   max-width: 1360px;
   margin: 0 auto;
-  padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
-    max(32px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
+  padding: max(16px, env(safe-area-inset-top))
+    max(16px, env(safe-area-inset-right)) max(32px, env(safe-area-inset-bottom))
+    max(16px, env(safe-area-inset-left));
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -338,7 +349,9 @@ body.oled-passthrough .module-card {
   height: 11px;
   border-radius: 50%;
   background: var(--text-muted);
-  transition: background-color 0.18s ease, box-shadow 0.18s ease;
+  transition:
+    background-color 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
 .oled-toggle.is-active {
@@ -376,7 +389,7 @@ body.oled-passthrough .module-card {
 }
 
 .cap-pill::before {
-  content: '';
+  content: "";
   width: 7px;
   height: 7px;
   border-radius: 50%;
@@ -480,7 +493,11 @@ body.oled-passthrough .module-card {
 
 .module-card.is-active {
   border-color: var(--accent-cyan);
-  background: linear-gradient(155deg, rgba(34, 211, 238, 0.16), rgba(167, 139, 250, 0.1));
+  background: linear-gradient(
+    155deg,
+    rgba(34, 211, 238, 0.16),
+    rgba(167, 139, 250, 0.1)
+  );
   box-shadow: var(--shadow-glow-cyan);
 }
 
@@ -870,12 +887,16 @@ body.oled-passthrough .guide-score {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .guide-card.is-done {
   border-color: rgba(52, 211, 153, 0.65);
-  box-shadow: 0 0 0 1px rgba(52, 211, 153, 0.25), var(--shadow-panel);
+  box-shadow:
+    0 0 0 1px rgba(52, 211, 153, 0.25),
+    var(--shadow-panel);
 }
 
 .guide-card-head {

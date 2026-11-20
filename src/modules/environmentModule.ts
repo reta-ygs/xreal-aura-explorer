@@ -1,5 +1,9 @@
 import * as THREE from 'three';
-import type { CapabilityReport, ExperienceModule, XrSceneContext } from '../types';
+import type {
+  CapabilityReport,
+  ExperienceModule,
+  XrSceneContext,
+} from '../types';
 import { mountXrViewport } from '../xr/xrEngine';
 
 type PlaceableKind = 'cube' | 'solar' | 'clock';
@@ -25,9 +29,15 @@ interface PlacedItem {
 
 function disposeObjectTree(root: THREE.Object3D): void {
   root.traverse((obj) => {
-    if (obj instanceof THREE.Mesh || obj instanceof THREE.Line || obj instanceof THREE.LineSegments) {
+    if (
+      obj instanceof THREE.Mesh ||
+      obj instanceof THREE.Line ||
+      obj instanceof THREE.LineSegments
+    ) {
       obj.geometry.dispose();
-      const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
+      const materials = Array.isArray(obj.material)
+        ? obj.material
+        : [obj.material];
       for (const mat of materials) {
         if (mat && 'map' in mat && mat.map instanceof THREE.Texture) {
           mat.map.dispose();
@@ -38,7 +48,10 @@ function disposeObjectTree(root: THREE.Object3D): void {
   });
 }
 
-function createFloatingCube(): { group: THREE.Group; update: (delta: number, elapsed: number) => void } {
+function createFloatingCube(): {
+  group: THREE.Group;
+  update: (delta: number, elapsed: number) => void;
+} {
   const group = new THREE.Group();
   const content = new THREE.Group();
   content.position.y = 0.14;
@@ -53,12 +66,19 @@ function createFloatingCube(): { group: THREE.Group; update: (delta: number, ela
     transparent: true,
     opacity: 0.72,
   });
-  const outerCube = new THREE.Mesh(new THREE.BoxGeometry(0.14, 0.14, 0.14), outerMat);
+  const outerCube = new THREE.Mesh(
+    new THREE.BoxGeometry(0.14, 0.14, 0.14),
+    outerMat,
+  );
   content.add(outerCube);
 
   const wire = new THREE.LineSegments(
     new THREE.EdgesGeometry(new THREE.BoxGeometry(0.165, 0.165, 0.165)),
-    new THREE.LineBasicMaterial({ color: 0x7dd3fc, transparent: true, opacity: 0.85 }),
+    new THREE.LineBasicMaterial({
+      color: 0x7dd3fc,
+      transparent: true,
+      opacity: 0.85,
+    }),
   );
   content.add(wire);
 
@@ -102,7 +122,10 @@ function createFloatingCube(): { group: THREE.Group; update: (delta: number, ela
   };
 }
 
-function createMiniSolarSystem(): { group: THREE.Group; update: (delta: number, elapsed: number) => void } {
+function createMiniSolarSystem(): {
+  group: THREE.Group;
+  update: (delta: number, elapsed: number) => void;
+} {
   const group = new THREE.Group();
   const center = new THREE.Group();
   center.position.y = 0.16;
@@ -132,16 +155,45 @@ function createMiniSolarSystem(): { group: THREE.Group; update: (delta: number, 
   }
 
   const specs: PlanetSpec[] = [
-    { radius: 0.085, size: 0.012, speed: 2.1, phase: 0.2, color: 0x38bdf8, emissive: 0x0284c7, tilt: 0.08 },
-    { radius: 0.13, size: 0.017, speed: 1.35, phase: 2.1, color: 0x34d399, emissive: 0x059669, tilt: -0.06 },
-    { radius: 0.18, size: 0.02, speed: 0.85, phase: 4.3, color: 0xc084fc, emissive: 0x7e22ce, tilt: 0.12, hasRing: true },
+    {
+      radius: 0.085,
+      size: 0.012,
+      speed: 2.1,
+      phase: 0.2,
+      color: 0x38bdf8,
+      emissive: 0x0284c7,
+      tilt: 0.08,
+    },
+    {
+      radius: 0.13,
+      size: 0.017,
+      speed: 1.35,
+      phase: 2.1,
+      color: 0x34d399,
+      emissive: 0x059669,
+      tilt: -0.06,
+    },
+    {
+      radius: 0.18,
+      size: 0.02,
+      speed: 0.85,
+      phase: 4.3,
+      color: 0xc084fc,
+      emissive: 0x7e22ce,
+      tilt: 0.12,
+      hasRing: true,
+    },
   ];
 
   const pivots: { pivot: THREE.Group; speed: number }[] = [];
 
   for (const spec of specs) {
     // Orbit ring
-    const orbitGeo = new THREE.RingGeometry(spec.radius - 0.0015, spec.radius + 0.0015, 48);
+    const orbitGeo = new THREE.RingGeometry(
+      spec.radius - 0.0015,
+      spec.radius + 0.0015,
+      48,
+    );
     orbitGeo.rotateX(-Math.PI / 2);
     const orbitMesh = new THREE.Mesh(
       orbitGeo,
@@ -174,7 +226,11 @@ function createMiniSolarSystem(): { group: THREE.Group; update: (delta: number, 
     pivot.add(planet);
 
     if (spec.hasRing) {
-      const saturnRingGeo = new THREE.RingGeometry(spec.size * 1.35, spec.size * 2.05, 32);
+      const saturnRingGeo = new THREE.RingGeometry(
+        spec.size * 1.35,
+        spec.size * 2.05,
+        32,
+      );
       saturnRingGeo.rotateX(-Math.PI / 2.4);
       const saturnRing = new THREE.Mesh(
         saturnRingGeo,
@@ -194,7 +250,11 @@ function createMiniSolarSystem(): { group: THREE.Group; update: (delta: number, 
   // Stand stem
   const stem = new THREE.Mesh(
     new THREE.CylinderGeometry(0.004, 0.012, 0.12, 12),
-    new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.7, roughness: 0.3 }),
+    new THREE.MeshStandardMaterial({
+      color: 0x334155,
+      metalness: 0.7,
+      roughness: 0.3,
+    }),
   );
   stem.position.y = 0.06;
   group.add(stem);
@@ -210,7 +270,10 @@ function createMiniSolarSystem(): { group: THREE.Group; update: (delta: number, 
   };
 }
 
-function createSpatialClock(): { group: THREE.Group; update: (delta: number, elapsed: number) => void } {
+function createSpatialClock(): {
+  group: THREE.Group;
+  update: (delta: number, elapsed: number) => void;
+} {
   const group = new THREE.Group();
   const clockGroup = new THREE.Group();
   clockGroup.position.y = 0.16;
@@ -445,7 +508,11 @@ export const environmentModule: ExperienceModule = {
 
     const tableEdge = new THREE.LineSegments(
       new THREE.EdgesGeometry(new THREE.BoxGeometry(1.76, 0.04, 1.16)),
-      new THREE.LineBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.65 }),
+      new THREE.LineBasicMaterial({
+        color: 0x38bdf8,
+        transparent: true,
+        opacity: 0.65,
+      }),
     );
     tableEdge.position.y = -0.018;
     tabletopGroup.add(tableEdge);
@@ -491,7 +558,10 @@ export const environmentModule: ExperienceModule = {
       }
     };
 
-    const spawnItemAtMatrix = (matrix: THREE.Matrix4, anchor: XRAnchor | null): void => {
+    const spawnItemAtMatrix = (
+      matrix: THREE.Matrix4,
+      anchor: XRAnchor | null,
+    ): void => {
       const built = createPlaceable(selectedKind);
       matrix.decompose(tmpPos, tmpQuat, tmpScale);
 
@@ -510,8 +580,12 @@ export const environmentModule: ExperienceModule = {
 
       updateToolbarStyles();
       const def = PLACEABLES.find((p) => p.kind === selectedKind);
-      const anchorNote = anchor ? '（空間アンカー固定）' : '（ワールド座標固定）';
-      sceneCtx?.setStatus(`「${def?.label ?? selectedKind}」を配置しました ${anchorNote}`);
+      const anchorNote = anchor
+        ? '（空間アンカー固定）'
+        : '（ワールド座標固定）';
+      sceneCtx?.setStatus(
+        `「${def?.label ?? selectedKind}」を配置しました ${anchorNote}`,
+      );
     };
 
     const clearAllPlaced = (): void => {
@@ -542,7 +616,10 @@ export const environmentModule: ExperienceModule = {
         | (XRHitTestResult & { createAnchor?: () => Promise<XRAnchor> })
         | null;
 
-      if (hitResultForAnchor && typeof hitResultForAnchor.createAnchor === 'function') {
+      if (
+        hitResultForAnchor &&
+        typeof hitResultForAnchor.createAnchor === 'function'
+      ) {
         void hitResultForAnchor
           .createAnchor()
           .then((anchor) => {
@@ -616,7 +693,10 @@ export const environmentModule: ExperienceModule = {
       }
       pointerDownActive = false;
 
-      const dist = Math.hypot(event.clientX - pointerDownX, event.clientY - pointerDownY);
+      const dist = Math.hypot(
+        event.clientX - pointerDownX,
+        event.clientY - pointerDownY,
+      );
       // Treat short click/tap as placement; longer movement was camera orbit
       if (dist > 6) {
         return;
@@ -723,8 +803,14 @@ export const environmentModule: ExperienceModule = {
             ctx.overlayRoot.appendChild(toolbar);
           }
 
-          ctx.renderer.domElement.addEventListener('pointermove', onPreviewPointerMove);
-          ctx.renderer.domElement.addEventListener('pointerdown', onPreviewPointerDown);
+          ctx.renderer.domElement.addEventListener(
+            'pointermove',
+            onPreviewPointerMove,
+          );
+          ctx.renderer.domElement.addEventListener(
+            'pointerdown',
+            onPreviewPointerDown,
+          );
           window.addEventListener('pointerup', onPreviewPointerUp);
 
           ctx.setStatus(
@@ -754,7 +840,9 @@ export const environmentModule: ExperienceModule = {
             .then((source) => {
               if (source && activeSession === session) {
                 hitTestSource = source;
-                sceneCtx?.setStatus('周囲の机や床をゆっくり見回して平面を検出してください...');
+                sceneCtx?.setStatus(
+                  '周囲の机や床をゆっくり見回して平面を検出してください...',
+                );
               }
             })
             .catch((err: unknown) => {
@@ -802,7 +890,10 @@ export const environmentModule: ExperienceModule = {
               // Track anchored objects via WebXR Anchors API
               for (const item of placedItems) {
                 if (item.anchor) {
-                  const anchorPose = frame.getPose(item.anchor.anchorSpace, refSpace);
+                  const anchorPose = frame.getPose(
+                    item.anchor.anchorSpace,
+                    refSpace,
+                  );
                   if (anchorPose) {
                     const p = anchorPose.transform.position;
                     const o = anchorPose.transform.orientation;
@@ -824,7 +915,7 @@ export const environmentModule: ExperienceModule = {
           for (const item of placedItems) {
             const age = elapsed - item.spawnTime;
             const scale = Math.min(1, age * 4.5);
-            const eased = 1 - Math.pow(1 - scale, 3);
+            const eased = 1 - (1 - scale) ** 3;
             item.root.scale.setScalar(Math.max(0.01, eased));
             item.update(delta, elapsed);
           }
@@ -841,8 +932,14 @@ export const environmentModule: ExperienceModule = {
           }
 
           if (sceneCtx) {
-            sceneCtx.renderer.domElement.removeEventListener('pointermove', onPreviewPointerMove);
-            sceneCtx.renderer.domElement.removeEventListener('pointerdown', onPreviewPointerDown);
+            sceneCtx.renderer.domElement.removeEventListener(
+              'pointermove',
+              onPreviewPointerMove,
+            );
+            sceneCtx.renderer.domElement.removeEventListener(
+              'pointerdown',
+              onPreviewPointerDown,
+            );
             sceneCtx.scene.remove(moduleRoot);
           }
           window.removeEventListener('pointerup', onPreviewPointerUp);

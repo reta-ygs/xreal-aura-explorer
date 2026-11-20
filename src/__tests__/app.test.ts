@@ -60,7 +60,9 @@ describe('guideModule DOM & localStorage persistence', () => {
     document.body.appendChild(root);
 
     const unmount = guideModule.mount(root, mockCapabilities);
-    const buttons = root.querySelectorAll<HTMLButtonElement>('button[data-action="toggle-check"]');
+    const buttons = root.querySelectorAll<HTMLButtonElement>(
+      'button[data-action="toggle-check"]',
+    );
     expect(buttons.length).toBeGreaterThanOrEqual(8);
 
     const firstId = buttons[0].dataset.id;
@@ -68,7 +70,7 @@ describe('guideModule DOM & localStorage persistence', () => {
 
     buttons[0].click();
     const updated = root.querySelector<HTMLButtonElement>(
-      `button[data-action="toggle-check"][data-id="${firstId}"]`
+      `button[data-action="toggle-check"][data-id="${firstId}"]`,
     );
     expect(updated?.getAttribute('aria-pressed')).toBe('true');
     expect(localStorage.length).toBeGreaterThan(0);
@@ -92,7 +94,10 @@ describe('opticsModule DOM lifecycle', () => {
 
 describe('PWA assets', () => {
   it('has a valid manifest.webmanifest', () => {
-    const raw = readFileSync(resolve(process.cwd(), 'public/manifest.webmanifest'), 'utf-8');
+    const raw = readFileSync(
+      resolve(process.cwd(), 'public/manifest.webmanifest'),
+      'utf-8',
+    );
     const manifest = JSON.parse(raw) as Record<string, unknown>;
     expect(manifest.name).toBe('XREAL AURA Explorer');
     expect(manifest.display).toBe('standalone');

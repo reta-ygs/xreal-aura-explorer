@@ -2,7 +2,11 @@ import type { CapabilityReport, ExperienceModule } from '../types.ts';
 
 type OpticsTab = 'fov' | 'ppd' | 'refresh' | 'dimming';
 type ContrastPreset = 'pure-black' | 'standard' | 'medium' | 'low' | 'inverted';
-type DimmingBgMode = 'pure-black' | 'high-contrast' | 'vivid-gradient' | 'reticle';
+type DimmingBgMode =
+  | 'pure-black'
+  | 'high-contrast'
+  | 'vivid-gradient'
+  | 'reticle';
 
 const STYLE_ID = 'xreal-optics-lab-styles';
 
@@ -279,7 +283,11 @@ function ensureStyles(): void {
   document.head.appendChild(style);
 }
 
-function sizeCanvasToDisplay(canvas: HTMLCanvasElement): { width: number; height: number; dpr: number } {
+function sizeCanvasToDisplay(canvas: HTMLCanvasElement): {
+  width: number;
+  height: number;
+  dpr: number;
+} {
   const rect = canvas.getBoundingClientRect();
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   const width = Math.max(1, Math.floor(rect.width));
@@ -324,10 +332,26 @@ export const opticsModule: ExperienceModule = {
     const panelHost = document.createElement('div');
 
     const tabDefs: Array<{ id: OpticsTab; label: string; sub: string }> = [
-      { id: 'fov', label: '70° FOV 体感フレーム', sub: '46° / 52° との視野角比較' },
-      { id: 'ppd', label: '32 PPD 文字精細度', sub: '小文字・コントラスト検証' },
-      { id: 'refresh', label: '最大120Hz 滑らかさ', sub: '実測FPS・UFO追従テスト' },
-      { id: 'dimming', label: '5段階電子調光テスト', sub: '純黒シースルー・調光ガイド' },
+      {
+        id: 'fov',
+        label: '70° FOV 体感フレーム',
+        sub: '46° / 52° との視野角比較',
+      },
+      {
+        id: 'ppd',
+        label: '32 PPD 文字精細度',
+        sub: '小文字・コントラスト検証',
+      },
+      {
+        id: 'refresh',
+        label: '最大120Hz 滑らかさ',
+        sub: '実測FPS・UFO追従テスト',
+      },
+      {
+        id: 'dimming',
+        label: '5段階電子調光テスト',
+        sub: '純黒シースルー・調光ガイド',
+      },
     ];
 
     const tabButtons = new Map<OpticsTab, HTMLButtonElement>();
@@ -416,7 +440,9 @@ export const opticsModule: ExperienceModule = {
       panelHost.appendChild(panel);
 
       const distInput = rangeRow.querySelector('input') as HTMLInputElement;
-      const distLabel = rangeRow.querySelector('[data-dist-label]') as HTMLElement;
+      const distLabel = rangeRow.querySelector(
+        '[data-dist-label]',
+      ) as HTMLElement;
 
       const calcDiagInches = (fovDeg: number, distM: number): number => {
         const diagMeters = 2 * distM * Math.tan(degToRad(fovDeg / 2));
@@ -455,7 +481,10 @@ export const opticsModule: ExperienceModule = {
         `;
       };
 
-      const drawFovCanvas = (targetCanvas: HTMLCanvasElement, fullMode: boolean): void => {
+      const drawFovCanvas = (
+        targetCanvas: HTMLCanvasElement,
+        fullMode: boolean,
+      ): void => {
         const ctx = targetCanvas.getContext('2d');
         if (!ctx) return;
         const { width, height, dpr } = sizeCanvasToDisplay(targetCanvas);
@@ -505,7 +534,7 @@ export const opticsModule: ExperienceModule = {
           stroke: string,
           fill: string,
           label: string,
-          dash: number[]
+          dash: number[],
         ): void => {
           const scale = Math.tan(degToRad(fovDeg / 2)) / tan70;
           const w = maxW * scale;
@@ -552,7 +581,7 @@ export const opticsModule: ExperienceModule = {
             '#38bdf8',
             'rgba(56, 189, 248, 0.08)',
             `70° XREAL AURA (${Math.round(calcDiagInches(70, state.distanceM))}")`,
-            []
+            [],
           );
         }
         if (state.show52) {
@@ -561,7 +590,7 @@ export const opticsModule: ExperienceModule = {
             '#a78bfa',
             'rgba(167, 139, 250, 0.08)',
             `52° 従来上位 (${Math.round(calcDiagInches(52, state.distanceM))}")`,
-            [6, 4]
+            [6, 4],
           );
         }
         if (state.show46) {
@@ -570,7 +599,7 @@ export const opticsModule: ExperienceModule = {
             '#fbbf24',
             'rgba(251, 191, 36, 0.09)',
             `46° 従来標準 (${Math.round(calcDiagInches(46, state.distanceM))}")`,
-            [4, 4]
+            [4, 4],
           );
         }
 
@@ -595,19 +624,23 @@ export const opticsModule: ExperienceModule = {
         if (fsCanvas) drawFovCanvas(fsCanvas, true);
       };
 
-      panel.querySelectorAll<HTMLButtonElement>('[data-toggle]').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const key = btn.dataset.toggle;
-          if (key === '70') state.show70 = !state.show70;
-          if (key === '52') state.show52 = !state.show52;
-          if (key === '46') state.show46 = !state.show46;
-          if (key === 'grid') state.showGrid = !state.showGrid;
-          btn.classList.toggle('is-active');
-          redrawAll();
+      panel
+        .querySelectorAll<HTMLButtonElement>('[data-toggle]')
+        .forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const key = btn.dataset.toggle;
+            if (key === '70') state.show70 = !state.show70;
+            if (key === '52') state.show52 = !state.show52;
+            if (key === '46') state.show46 = !state.show46;
+            if (key === 'grid') state.showGrid = !state.showGrid;
+            btn.classList.toggle('is-active');
+            redrawAll();
+          });
         });
-      });
 
-      const fsBtn = panel.querySelector<HTMLButtonElement>('[data-action="fullscreen"]');
+      const fsBtn = panel.querySelector<HTMLButtonElement>(
+        '[data-action="fullscreen"]',
+      );
       fsBtn?.addEventListener('click', () => {
         closeFullscreenOverlay();
         const overlay = document.createElement('div');
@@ -621,7 +654,9 @@ export const opticsModule: ExperienceModule = {
           </span>
           <button type="button" class="optics-chip is-active">閉じる</button>
         `;
-        hud.querySelector('button')?.addEventListener('click', closeFullscreenOverlay);
+        hud
+          .querySelector('button')
+          ?.addEventListener('click', closeFullscreenOverlay);
         overlay.appendChild(fsCanvas);
         overlay.appendChild(hud);
         document.body.appendChild(overlay);
@@ -706,8 +741,12 @@ export const opticsModule: ExperienceModule = {
         <div class="optics-controls" data-contrast-controls></div>
       `;
 
-      const sizeHost = panel.querySelector('[data-size-controls]') as HTMLElement;
-      const contrastHost = panel.querySelector('[data-contrast-controls]') as HTMLElement;
+      const sizeHost = panel.querySelector(
+        '[data-size-controls]',
+      ) as HTMLElement;
+      const contrastHost = panel.querySelector(
+        '[data-contrast-controls]',
+      ) as HTMLElement;
 
       const stage = document.createElement('div');
       stage.className = 'optics-ppd-stage';
@@ -731,7 +770,9 @@ export const opticsModule: ExperienceModule = {
         btn.textContent = `${sz}px`;
         btn.addEventListener('click', () => {
           fontSizePx = sz;
-          sizeButtons.forEach((b) => b.classList.toggle('is-active', b === btn));
+          sizeButtons.forEach((b) => {
+            b.classList.toggle('is-active', b === btn);
+          });
           updateStage();
         });
         sizeButtons.push(btn);
@@ -757,7 +798,9 @@ export const opticsModule: ExperienceModule = {
         btn.textContent = contrastStyles[key].label;
         btn.addEventListener('click', () => {
           contrast = key;
-          contrastButtons.forEach((b, k) => b.classList.toggle('is-active', k === key));
+          contrastButtons.forEach((b, k) => {
+            b.classList.toggle('is-active', k === key);
+          });
           updateStage();
         });
         contrastButtons.set(key, btn);
@@ -782,7 +825,10 @@ export const opticsModule: ExperienceModule = {
         ];
         const pad = 12;
         const gap = 12;
-        const blockW = Math.max(40, (width - pad * 2 - gap * (blocks.length - 1)) / blocks.length);
+        const blockW = Math.max(
+          40,
+          (width - pad * 2 - gap * (blocks.length - 1)) / blocks.length,
+        );
         const barTop = 28;
         const barH = Math.max(24, height - barTop - 12);
 
@@ -927,24 +973,34 @@ export const opticsModule: ExperienceModule = {
       const fpsEl = statsGrid.querySelector('[data-fps]') as HTMLElement;
       const tierEl = statsGrid.querySelector('[data-tier]') as HTMLElement;
       const msEl = statsGrid.querySelector('[data-ms]') as HTMLElement;
-      const speedValEl = statsGrid.querySelector('[data-speed-val]') as HTMLElement;
+      const speedValEl = statsGrid.querySelector(
+        '[data-speed-val]',
+      ) as HTMLElement;
 
-      const speedBtns = Array.from(panel.querySelectorAll<HTMLButtonElement>('[data-speed]'));
+      const speedBtns = Array.from(
+        panel.querySelectorAll<HTMLButtonElement>('[data-speed]'),
+      );
       speedBtns.forEach((btn) => {
         btn.addEventListener('click', () => {
           speedPxPerSec = Number(btn.dataset.speed);
           speedValEl.textContent = `${speedPxPerSec} px/s`;
-          speedBtns.forEach((b) => b.classList.toggle('is-active', b === btn));
+          speedBtns.forEach((b) => {
+            b.classList.toggle('is-active', b === btn);
+          });
         });
       });
 
-      const gridBtn = panel.querySelector<HTMLButtonElement>('[data-action="grid"]');
+      const gridBtn = panel.querySelector<HTMLButtonElement>(
+        '[data-action="grid"]',
+      );
       gridBtn?.addEventListener('click', () => {
         showGrid = !showGrid;
         gridBtn.classList.toggle('is-active', showGrid);
       });
 
-      const pauseBtn = panel.querySelector<HTMLButtonElement>('[data-action="pause"]');
+      const pauseBtn = panel.querySelector<HTMLButtonElement>(
+        '[data-action="pause"]',
+      );
       pauseBtn?.addEventListener('click', () => {
         paused = !paused;
         pauseBtn.textContent = paused ? '再開' : '一時停止';
@@ -962,7 +1018,7 @@ export const opticsModule: ExperienceModule = {
         x: number,
         y: number,
         accent: string,
-        label: string
+        label: string,
       ): void => {
         // Motion bar behind UFO
         ctx.fillStyle = accent;
@@ -1014,7 +1070,8 @@ export const opticsModule: ExperienceModule = {
 
         if (now - lastStatUpdate > 200 && frameDeltas.length > 4) {
           lastStatUpdate = now;
-          const avgMs = frameDeltas.reduce((a, b) => a + b, 0) / frameDeltas.length;
+          const avgMs =
+            frameDeltas.reduce((a, b) => a + b, 0) / frameDeltas.length;
           const fps = Math.round(1000 / avgMs);
           fpsEl.textContent = `${fps} FPS`;
           msEl.textContent = `${avgMs.toFixed(2)} ms`;
@@ -1037,9 +1094,24 @@ export const opticsModule: ExperienceModule = {
           ctx.fillRect(0, 0, width, height);
 
           const lanes = [
-            { title: 'フルレート (最大120Hz Native)', hz: 0, color: '#38bdf8', tag: 'NATIVE' },
-            { title: '60Hz 相当 (ステップ再現)', hz: 60, color: '#a78bfa', tag: '60HZ' },
-            { title: '30Hz 相当 (低レート比較)', hz: 30, color: '#fb923c', tag: '30HZ' },
+            {
+              title: 'フルレート (最大120Hz Native)',
+              hz: 0,
+              color: '#38bdf8',
+              tag: 'NATIVE',
+            },
+            {
+              title: '60Hz 相当 (ステップ再現)',
+              hz: 60,
+              color: '#a78bfa',
+              tag: '60HZ',
+            },
+            {
+              title: '30Hz 相当 (低レート比較)',
+              hz: 30,
+              color: '#fb923c',
+              tag: '30HZ',
+            },
           ];
 
           const graphH = 38;
@@ -1073,7 +1145,10 @@ export const opticsModule: ExperienceModule = {
             ctx.font = '600 12px system-ui, sans-serif';
             ctx.fillText(lane.title, 12, top + 18);
 
-            const t = lane.hz === 0 ? simTimeSec : Math.floor(simTimeSec * lane.hz) / lane.hz;
+            const t =
+              lane.hz === 0
+                ? simTimeSec
+                : Math.floor(simTimeSec * lane.hz) / lane.hz;
             const span = width + 120;
             const x = ((t * speedPxPerSec) % span) - 60;
             drawUfo(ctx, x, cy, lane.color, lane.tag);
@@ -1090,8 +1165,14 @@ export const opticsModule: ExperienceModule = {
           frameDeltas.forEach((d, i) => {
             const clamped = Math.min(33, d);
             const h = (clamped / 33) * (graphH - 10);
-            ctx.fillStyle = d <= 10 ? '#38bdf8' : d <= 18 ? '#a78bfa' : '#f97316';
-            ctx.fillRect(112 + i * barW, height - h - 3, Math.max(1, barW - 1), h);
+            ctx.fillStyle =
+              d <= 10 ? '#38bdf8' : d <= 18 ? '#a78bfa' : '#f97316';
+            ctx.fillRect(
+              112 + i * barW,
+              height - h - 3,
+              Math.max(1, barW - 1),
+              h,
+            );
           });
 
           ctx.restore();
@@ -1111,11 +1192,36 @@ export const opticsModule: ExperienceModule = {
       let selectedLevel = 3;
 
       const levels = [
-        { lv: 1, name: 'Lv.1 最明（透過優先）', pct: 20, desc: '移動中・周囲確認に最適。現実視界が最もクリア。' },
-        { lv: 2, name: 'Lv.2 弱調光', pct: 40, desc: '明るい室内でHUDと現実をバランスよく重ねる。' },
-        { lv: 3, name: 'Lv.3 標準バランス', pct: 60, desc: 'テキスト作業・日常のARアプリに標準的な見やすさ。' },
-        { lv: 4, name: 'Lv.4 強調光', pct: 80, desc: '窓際や照明下でも映像コントラストをしっかり確保。' },
-        { lv: 5, name: 'Lv.5 最暗（没入・映画）', pct: 100, desc: '最大遮光。Micro-OLEDの発色と黒の締まりを最大化。' },
+        {
+          lv: 1,
+          name: 'Lv.1 最明（透過優先）',
+          pct: 20,
+          desc: '移動中・周囲確認に最適。現実視界が最もクリア。',
+        },
+        {
+          lv: 2,
+          name: 'Lv.2 弱調光',
+          pct: 40,
+          desc: '明るい室内でHUDと現実をバランスよく重ねる。',
+        },
+        {
+          lv: 3,
+          name: 'Lv.3 標準バランス',
+          pct: 60,
+          desc: 'テキスト作業・日常のARアプリに標準的な見やすさ。',
+        },
+        {
+          lv: 4,
+          name: 'Lv.4 強調光',
+          pct: 80,
+          desc: '窓際や照明下でも映像コントラストをしっかり確保。',
+        },
+        {
+          lv: 5,
+          name: 'Lv.5 最暗（没入・映画）',
+          pct: 100,
+          desc: '最大遮光。Micro-OLEDの発色と黒の締まりを最大化。',
+        },
       ];
 
       const panel = document.createElement('div');
@@ -1149,11 +1255,15 @@ export const opticsModule: ExperienceModule = {
 
       panelHost.appendChild(panel);
 
-      const bgButtons = Array.from(panel.querySelectorAll<HTMLButtonElement>('[data-bg]'));
+      const bgButtons = Array.from(
+        panel.querySelectorAll<HTMLButtonElement>('[data-bg]'),
+      );
       bgButtons.forEach((btn) => {
         btn.addEventListener('click', () => {
           bgMode = btn.dataset.bg as DimmingBgMode;
-          bgButtons.forEach((b) => b.classList.toggle('is-active', b === btn));
+          bgButtons.forEach((b) => {
+            b.classList.toggle('is-active', b === btn);
+          });
           renderStage();
         });
       });

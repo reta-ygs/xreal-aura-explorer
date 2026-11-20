@@ -29,6 +29,12 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Lint & Format check (Biome)
+        run: npm run check
+
+      - name: Dependency audit (high+)
+        run: npm audit --audit-level=high
+
       - name: Run tests
         run: npm test
 
