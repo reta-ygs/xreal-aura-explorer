@@ -2,7 +2,7 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": ["config:recommended", "helpers:pinGitHubActionDigests"],
   "timezone": "Asia/Tokyo",
-  "schedule": ["* 0-6 * * 1"],
+  "schedule": ["* 0-6 * * *"],
   "dependencyDashboard": true,
   "minimumReleaseAge": "1 day",
   "prConcurrentLimit": 3,
